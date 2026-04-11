@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webTFGBack.data;
-using webTFGBack.Models;
 
-namespace LoginApi.Controllers
+namespace webTFGBack.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -19,25 +18,44 @@ namespace LoginApi.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            Console.WriteLine($"Correo recibido: '{request.corrro}'");
-            Console.WriteLine($"Pass recibido: '{request.pass}'");
+            if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.pass))
+                return BadRequest(new { message = "Email y contraseña son obligatorios" });
 
-            var cliente = await _context.Cliente
-                .FirstOrDefaultAsync(c => c.correo == request.correo);
+            var emailNorm = request.email.Trim().ToLower();
 
-            if (cliente == null)
-                return Unauthorized(new { message = "Usuario no encontrado" });
+            // 1 — Buscar Persona por email
+            var persona = await _context.Persona
+                .FirstOrDefaultAsync(p => p.email != null &&
+                                          p.email.ToLower().Trim() == emailNorm);
 
-            if (cliente.pass != request.pass)
-                return Unauthorized(new { message = "Contraseña incorrecta" });
+            if (persona == null)
+                return Unauthorized(new { message = "Email o contraseña incorrectos" });
 
-            return Ok(new { message = "Login correcto", user = cliente.nombre });
+            // 2 — Verificar contraseña
+            if (persona.pass.Trim() != request.pass.Trim())
+                return Unauthorized(new { message = "Email o contraseña incorrectos" });
+
+            // 3 — Verificar que es Trabajador
+            var trabajador = await _context.Trabajador
+                .FirstOrDefaultAsync(t => t.id_persona == persona.id_persona);
+
+            if (trabajador == null)
+                return Unauthorized(new { message = "Acceso denegado: solo trabajadores pueden entrar" });
+
+            return Ok(new
+            {
+                message = "Login correcto",
+                id_trabajador = trabajador.id_trabajador,
+                rol = trabajador.rol,
+                nombre = persona.nombre,
+                email = persona.email
+            });
         }
     }
 
     public class LoginRequest
     {
-        public string correo { get; set; } = string.Empty;
+        public string email { get; set; } = string.Empty;
         public string pass { get; set; } = string.Empty;
     }
 }

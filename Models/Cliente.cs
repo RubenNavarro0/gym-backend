@@ -1,17 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using webTFGBack.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace webTFGBack.Models
 {
+    [Table("Cliente")]
     public class Cliente
     {
+        [Key]
         public int id_cliente { get; set; }
-        public required string correo { get; set; }
-        public string nombre { get; set; }
-        public string apellidos { get; set; }
-        public required string pass { get; set; }
-        public string dni { get; set; }
 
-        public List<Membresia>? Membresias { get; set; }
+        [ForeignKey("Persona")]
+        public int id_persona { get; set; }
+
+        // Navegación
+        public Persona? Persona { get; set; }
+        public ICollection<Suscripcion> Suscripciones { get; set; } = new List<Suscripcion>();
     }
 }

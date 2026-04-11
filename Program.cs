@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowVue",
         policy =>
         {
-            policy.WithOrigins("http://localhost:5173") // URL del front
+            policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -68,8 +68,5 @@ catch (Exception ex)
     Console.WriteLine($"Error conectando a la base de datos: {ex.Message}");
 }
 // ----------------------------------------------
-
-
-
 
 app.Run();
