@@ -49,9 +49,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
 app.UseCors("AllowVue");
+
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
