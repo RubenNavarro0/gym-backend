@@ -27,6 +27,9 @@ namespace webTFGBack.Models
         [MaxLength(50)]
         public string tipo { get; set; } = string.Empty;
 
+        [Required]
+        public bool isActive { get; set; } = true;
+
         [ForeignKey("Compania")]
         public int id_compania { get; set; }
 
