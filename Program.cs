@@ -15,10 +15,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowVue",
         policy =>
         {
-            policy.WithOrigins(
-                "http://localhost:5173",
-            "https://gymderubensindiegoyalex.netlify.app"
-            )
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
