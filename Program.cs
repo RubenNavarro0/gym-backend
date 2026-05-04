@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(
                 "http://localhost:5173",
-            "https://adorable-marzipan-b37e57.netlify.app"
+            "https://gymderubensindiegoyalex.netlify.app/"
             )
                   .AllowAnyHeader()
                   .AllowAnyMethod();
